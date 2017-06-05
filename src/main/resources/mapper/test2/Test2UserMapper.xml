@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wsf.dao.test2.Test2UserMapper">
+    <resultMap id="BaseResultMap" type="com.wsf.pojo.entity.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="sex" jdbcType="VARCHAR" property="sex"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, age, name, sex
+    </sql>
+    <select id="findAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_user
+    </select>
+
+    <select id="findById" resultMap="BaseResultMap" parameterType="int">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_user where id = #{id}
+    </select>
+
+    <select id="findByName" resultMap="BaseResultMap" parameterType="string">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_user where name = #{name}
+    </select>
+    <insert id="save" parameterType="com.wsf.pojo.entity.User">
+        insert into tb_user (age, name, sex) values (#{age}, #{name}, #{sex})
+    </insert>
+    <update id="update" parameterType="com.wsf.pojo.entity.User">
+        update tb_user set age = #{age}, name = #{name}, sex = #{sex} where id = #{id}
+    </update>
+    <delete id="delete" parameterType="int">
+        delete from tb_user where id = #{id}
+    </delete>
+</mapper>
