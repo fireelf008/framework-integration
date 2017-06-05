@@ -11,6 +11,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
+ * 初始化swagger2
  * Created by YSD on 2017/3/27.
  */
 @Configuration
@@ -30,7 +31,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("framework for the integration")
-                .description("springboot, mybatis, fastjson, druid, swagger, log4j2, pagehelper")
+                .description("springboot, mybatis, atomikos, fastjson, druid, swagger, log4j2, pagehelper")
 //                .termsOfServiceUrl("http://blog.didispace.com/")
                 .contact("王少甫")
                 .version("1.0")

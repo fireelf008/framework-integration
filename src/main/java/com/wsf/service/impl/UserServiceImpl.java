@@ -2,6 +2,7 @@ package com.wsf.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.wsf.dao.test1.Test1UserMapper;
+import com.wsf.dao.test2.Test2UserMapper;
 import com.wsf.pojo.dto.UserDTO;
 import com.wsf.pojo.entity.User;
 import com.wsf.service.api.IUserService;
@@ -17,16 +18,19 @@ import java.util.List;
  * 用户service实现类
  */
 @Service
-@Transactional("test1TransactionManager")
+@Transactional
 public class UserServiceImpl implements IUserService {
 
     @Autowired
-    private Test1UserMapper userMapper;
+    private Test1UserMapper user1Mapper;
+
+    @Autowired
+    private Test2UserMapper user2Mapper;
 
     @Override
     public List<UserDTO> findAll() {
         PageHelper.startPage(1,20);
-        List<User> userList = this.userMapper.findAll();
+        List<User> userList = this.user1Mapper.findAll();
         List<UserDTO> userDTOList = new ArrayList<UserDTO>();
         for (User user : userList) {
             UserDTO userDTO = new UserDTO();
@@ -38,7 +42,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO findById(Integer id) {
-        User user = this.userMapper.findById(id);
+        User user = this.user1Mapper.findById(id);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;
@@ -46,7 +50,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO findByName(String name) {
-        User user = this.userMapper.findByName(name);
+        User user = this.user1Mapper.findByName(name);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
         return userDTO;
@@ -56,7 +60,7 @@ public class UserServiceImpl implements IUserService {
     public int save(UserDTO userDTO) {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
-        int count = this.userMapper.save(user);
+        int count = this.user1Mapper.save(user);
         return count;
     }
 
@@ -64,13 +68,15 @@ public class UserServiceImpl implements IUserService {
     public int updae(UserDTO userDTO) {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
-        int count = this.userMapper.update(user);
+        int count = this.user1Mapper.update(user);
+        count = this.user2Mapper.update(user);
+        int i = 1/0;
         return count;
     }
 
     @Override
     public int delete(Integer id) {
-        int count = this.userMapper.delete(id);
+        int count = this.user1Mapper.delete(id);
         return count;
     }
 }

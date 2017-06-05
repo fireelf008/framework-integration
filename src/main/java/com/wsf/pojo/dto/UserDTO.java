@@ -1,6 +1,6 @@
 package com.wsf.pojo.dto;
 
-import com.wsf.entity.User;
+import com.wsf.pojo.entity.User;
 
 import java.io.Serializable;
 

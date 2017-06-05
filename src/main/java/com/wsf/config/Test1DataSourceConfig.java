@@ -1,13 +1,14 @@
 package com.wsf.config;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageHelper;
+import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jta.atomikos.AtomikosDataSourceBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -79,38 +80,38 @@ public class Test1DataSourceConfig {
     @Bean(name = "test1DataSource")
     @Primary
     public DataSource dataSource() throws SQLException {
-        DruidDataSource dataSource = new DruidDataSource();
-        dataSource.setDbType(type);
-        dataSource.setDriverClassName(driverClassName);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        dataSource.setInitialSize(initialSize);
-        dataSource.setMinIdle(minIdle);
-        dataSource.setMaxActive(maxActive);
-        dataSource.setMaxWait(maxWait);
-        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        dataSource.setValidationQuery(validationQuery);
-        dataSource.setTestWhileIdle(testWhileIdle);
-        dataSource.setTestOnBorrow(testOnBorrow);
-        dataSource.setTestOnReturn(testOnReturn);
-        dataSource.setPoolPreparedStatements(poolPreparedStatements);
-        dataSource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
-        return dataSource;
+        MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
+        mysqlXaDataSource.setUrl(url);
+        mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
+        mysqlXaDataSource.setPassword(password);
+        mysqlXaDataSource.setUser(username);
+        mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
+
+        AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
+        xaDataSource.setXaDataSource(mysqlXaDataSource);
+        xaDataSource.setMinPoolSize(minIdle);
+        xaDataSource.setMaxPoolSize(maxActive);
+        xaDataSource.setMaxLifetime(maxWait);
+//        xaDataSource.setBorrowConnectionTimeout(dbConfig.getBorrowConnectionTimeout());
+//        /** login-timeout java数据库连接池，最大可等待获取datasouce的时间 **/
+//        xaDataSource.setLoginTimeout(dbConfig.getLoginTimeout());
+//        xaDataSource.setMaintenanceInterval(dbConfig.getMaintenanceInterval());
+//        xaDataSource.setMaxIdleTime(dbConfig.getMaxIdleTime());
+        xaDataSource.setTestQuery(validationQuery);
+
+        return xaDataSource;
     }
 
     @Bean(name = "test1TransactionManager")
-    @Primary
     public DataSourceTransactionManager transactionManager() throws SQLException {
         return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean(name = "test1SqlSessionFactory")
     @Primary
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("test1DataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory() throws Exception {
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
+        sessionFactory.setDataSource(dataSource());
         sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(Test1DataSourceConfig.MAPPER_LOCATION));
 
         PageHelper pageHelper = new PageHelper();
