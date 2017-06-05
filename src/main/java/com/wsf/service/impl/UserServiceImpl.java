@@ -70,7 +70,6 @@ public class UserServiceImpl implements IUserService {
         BeanUtils.copyProperties(userDTO, user);
         int count = this.user1Mapper.update(user);
         count = this.user2Mapper.update(user);
-        int i = 1/0;
         return count;
     }
 

@@ -1,5 +1,7 @@
 package com.wsf.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.pool.xa.DruidXADataSource;
 import com.github.pagehelper.PageHelper;
 import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 import org.apache.ibatis.plugin.Interceptor;
@@ -25,9 +27,6 @@ public class Test1DataSourceConfig {
 
     protected static final String BASE_PACKAGES = "com.wsf.dao.test1";
     protected static final String MAPPER_LOCATION = "classpath:mapper/test1/*.xml";
-
-    @Value("${spring.datasource.type}")
-    private String type;
 
     @Value("${spring.datasource.driverClassName}")
     private String driverClassName;
@@ -80,25 +79,26 @@ public class Test1DataSourceConfig {
     @Bean(name = "test1DataSource")
     @Primary
     public DataSource dataSource() throws SQLException {
-        MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
-        mysqlXaDataSource.setUrl(url);
-        mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
-        mysqlXaDataSource.setPassword(password);
-        mysqlXaDataSource.setUser(username);
-        mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
+        DruidXADataSource dataSource = new DruidXADataSource();
+        dataSource.setDriverClassName(driverClassName);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+        dataSource.setInitialSize(initialSize);
+        dataSource.setMinIdle(minIdle);
+        dataSource.setMaxActive(maxActive);
+        dataSource.setMaxWait(maxWait);
+        dataSource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        dataSource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        dataSource.setValidationQuery(validationQuery);
+        dataSource.setTestWhileIdle(testWhileIdle);
+        dataSource.setTestOnBorrow(testOnBorrow);
+        dataSource.setTestOnReturn(testOnReturn);
+        dataSource.setPoolPreparedStatements(poolPreparedStatements);
+        dataSource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
 
         AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
-        xaDataSource.setXaDataSource(mysqlXaDataSource);
-        xaDataSource.setMinPoolSize(minIdle);
-        xaDataSource.setMaxPoolSize(maxActive);
-        xaDataSource.setMaxLifetime(maxWait);
-//        xaDataSource.setBorrowConnectionTimeout(dbConfig.getBorrowConnectionTimeout());
-//        /** login-timeout java数据库连接池，最大可等待获取datasouce的时间 **/
-//        xaDataSource.setLoginTimeout(dbConfig.getLoginTimeout());
-//        xaDataSource.setMaintenanceInterval(dbConfig.getMaintenanceInterval());
-//        xaDataSource.setMaxIdleTime(dbConfig.getMaxIdleTime());
-        xaDataSource.setTestQuery(validationQuery);
-
+        xaDataSource.setXaDataSource(dataSource);
         return xaDataSource;
     }
 
