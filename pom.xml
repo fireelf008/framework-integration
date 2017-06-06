@@ -4,10 +4,23 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.wsf</groupId>
     <artifactId>framework-integration</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>framework-integration Maven Webapp</name>
     <url>http://maven.apache.org</url>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Release</name>
+            <url>http://42.159.110.94:8082/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot</name>
+            <url>http://42.159.110.94:8082/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
